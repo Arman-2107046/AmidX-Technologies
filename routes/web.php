@@ -1,18 +1,37 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+/*
+|--------------------------------------------------------------------------
+| Public marketing site
+|--------------------------------------------------------------------------
+|
+| These mirror the routes the standalone AmidX React app declared in its
+| App.tsx router. Each one renders the matching Inertia page, which wraps
+| itself in PublicLayout (navbar, footer, cursor).
+|
+*/
+
+Route::get('/', fn () => Inertia::render('Home'))->name('home');
+Route::get('/solutions', fn () => Inertia::render('Solutions'))->name('solutions');
+Route::get('/about', fn () => Inertia::render('About'))->name('about');
+Route::get('/contact', fn () => Inertia::render('Contact'))->name('contact');
+Route::get('/pricing', fn () => Inertia::render('Pricing'))->name('pricing');
+Route::get('/privacy', fn () => Inertia::render('Privacy'))->name('privacy');
+Route::get('/service', fn () => Inertia::render('Service'))->name('service');
+
+// The original router mapped /services and /services/* to the same page.
+Route::get('/services', fn () => Inertia::render('Solutions'))->name('services');
+Route::get('/services/{any}', fn () => Inertia::render('Solutions'))->where('any', '.*');
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated area
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -25,3 +44,19 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+/*
+|--------------------------------------------------------------------------
+| Catch-all
+|--------------------------------------------------------------------------
+|
+| Stands in for the "*" route the original React router used to show the
+| NotFound page. Registered last so it only runs when nothing else matched.
+|
+*/
+
+Route::fallback(function () {
+    return Inertia::render('NotFound')
+        ->toResponse(request())
+        ->setStatusCode(404);
+});
