@@ -1,46 +1,14 @@
+import RichTextEditor from '@/Components/RichTextEditor';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Eye, ImageIcon, LoaderCircle, PenLine } from 'lucide-react';
+import { ImageIcon, LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
 
 const inputClasses =
     'mt-1 block w-full rounded-lg border-input bg-background text-foreground shadow-sm focus:border-foreground focus:ring-ring';
 
-/**
- * Minimal Markdown preview. Deliberately small: it covers the subset an
- * editor sees while typing. The public page renders the real thing with
- * CommonMark server-side, so this is a guide, not the source of truth.
- */
-function previewMarkdown(src = '') {
-    const escape = (s) =>
-        s
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-
-    return escape(src)
-        .replace(/^### (.*)$/gm, '<h3>$1</h3>')
-        .replace(/^## (.*)$/gm, '<h2>$1</h2>')
-        .replace(/^# (.*)$/gm, '<h1>$1</h1>')
-        .replace(/^&gt; (.*)$/gm, '<blockquote>$1</blockquote>')
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.+?)\*/g, '<em>$1</em>')
-        .replace(/`(.+?)`/g, '<code>$1</code>')
-        .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>')
-        .replace(/^- (.*)$/gm, '<li>$1</li>')
-        .replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>')
-        .split(/\n{2,}/)
-        .map((chunk) =>
-            /^\s*<(h[1-3]|ul|blockquote)/.test(chunk)
-                ? chunk
-                : `<p>${chunk.replace(/\n/g, '<br />')}</p>`,
-        )
-        .join('\n');
-}
-
 export default function PostEdit({ post, categories }) {
     const isNew = !post;
-    const [tab, setTab] = useState('write');
     const [coverPreview, setCoverPreview] = useState(post?.cover_url ?? null);
 
     const { data, setData, post: submit, processing, errors } = useForm({
@@ -196,48 +164,11 @@ export default function PostEdit({ post, categories }) {
                     </div>
 
                     {/* Body editor */}
-                    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-premium-sm">
-                        <div className="flex items-center gap-1 border-b border-border px-4 py-2">
-                            {[
-                                ['write', 'Write', PenLine],
-                                ['preview', 'Preview', Eye],
-                            ].map(([key, label, Icon]) => (
-                                <button
-                                    key={key}
-                                    type="button"
-                                    onClick={() => setTab(key)}
-                                    className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                                        tab === key
-                                            ? 'bg-foreground text-background'
-                                            : 'text-muted-foreground hover:text-foreground'
-                                    }`}
-                                >
-                                    <Icon className="h-4 w-4" />
-                                    {label}
-                                </button>
-                            ))}
-                            <span className="ml-auto text-xs text-muted-foreground">
-                                Markdown
-                            </span>
-                        </div>
-
-                        {tab === 'write' ? (
-                            <textarea
-                                value={data.body}
-                                onChange={(e) => setData('body', e.target.value)}
-                                rows={22}
-                                placeholder={'## A heading\n\nWrite your article in Markdown.'}
-                                className="block w-full border-0 bg-background p-6 font-mono text-sm text-foreground focus:ring-0"
-                            />
-                        ) : (
-                            <div
-                                className="prose prose-neutral max-w-none p-6 dark:prose-invert"
-                                dangerouslySetInnerHTML={{
-                                    __html: previewMarkdown(data.body),
-                                }}
-                            />
-                        )}
-                    </div>
+                    <RichTextEditor
+                        value={data.body}
+                        onChange={(html) => setData('body', html)}
+                        placeholder="Tell the story…"
+                    />
 
                     {/* SEO */}
                     <div className="rounded-2xl border border-border bg-card p-6 shadow-premium-sm">

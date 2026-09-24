@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class BlogSeeder extends Seeder
 {
@@ -38,7 +39,7 @@ class BlogSeeder extends Seeder
                 'title' => $definition['title'],
                 'slug' => $slug,
                 'excerpt' => $definition['excerpt'],
-                'body' => $definition['body'],
+                'body' => Str::markdown($definition['body']),
                 'status' => 'published',
                 'is_featured' => $i === 0,
                 'published_at' => now()->subDays($i * 6 + 1),

@@ -1,7 +1,8 @@
 import AnimatedSection from '@/Components/AnimatedSection';
+import PostCover from '@/Components/PostCover';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Check, Link2 } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Check, Link2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 /** Thin progress bar showing how far through the article the reader is. */
@@ -13,7 +14,9 @@ function ReadingProgress() {
             const scrollable =
                 document.documentElement.scrollHeight - window.innerHeight;
             setProgress(
-                scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0,
+                scrollable > 0
+                    ? Math.min(100, (window.scrollY / scrollable) * 100)
+                    : 0,
             );
         };
 
@@ -23,9 +26,16 @@ function ReadingProgress() {
     }, []);
 
     return (
-        <div className="fixed left-0 right-0 top-0 z-[60] h-0.5 bg-transparent">
+        <div
+            className="fixed left-0 right-0 top-0 z-[60] h-0.5 bg-transparent"
+            role="progressbar"
+            aria-label="Reading progress"
+            aria-valuenow={Math.round(progress)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+        >
             <div
-                className="h-full bg-foreground transition-[width] duration-150"
+                className="h-full bg-foreground"
                 style={{ width: `${progress}%` }}
             />
         </div>
@@ -42,14 +52,14 @@ function CopyLinkButton() {
             setTimeout(() => setCopied(false), 2000);
         } catch {
             // Clipboard blocked (insecure context or denied permission);
-            // leave the button silent rather than throwing at the reader.
+            // stay silent rather than throwing at the reader.
         }
     };
 
     return (
         <button
             onClick={copy}
-            className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground"
         >
             {copied ? (
                 <Check className="h-4 w-4" />
@@ -61,24 +71,44 @@ function CopyLinkButton() {
     );
 }
 
+/** Initials avatar — the author has no uploaded image. */
+function AuthorMark({ name }) {
+    const initials = (name || '?')
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((w) => w[0])
+        .join('')
+        .toUpperCase();
+
+    return (
+        <span
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-foreground text-xs font-semibold text-background"
+            aria-hidden="true"
+        >
+            {initials}
+        </span>
+    );
+}
+
 function RelatedCard({ post }) {
     return (
         <Link href={post.url} className="group flex flex-col">
-            <div className="aspect-[16/10] overflow-hidden rounded-2xl bg-muted">
-                {post.cover_url ? (
-                    <img
-                        src={post.cover_url}
-                        alt={post.cover_alt}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                ) : (
-                    <div className="h-full w-full bg-gradient-to-br from-muted to-border" />
-                )}
+            <div className="aspect-[3/2] overflow-hidden rounded-2xl bg-muted">
+                <PostCover
+                    post={post}
+                    className="transition-transform duration-700 ease-premium group-hover:scale-[1.04]"
+                    sizes="(min-width: 1024px) 33vw, 100vw"
+                />
             </div>
-            <h3 className="mt-4 font-semibold leading-snug tracking-tight transition-opacity group-hover:opacity-70">
+
+            <p className="mb-2 mt-5 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                {post.categories?.[0]?.name ?? 'Article'}
+            </p>
+
+            <h3 className="text-balance font-semibold leading-snug tracking-tight transition-opacity duration-300 group-hover:opacity-60">
                 {post.title}
             </h3>
+
             <p className="mt-2 text-xs text-muted-foreground">
                 {post.published_label} &middot; {post.reading_minutes} min read
             </p>
@@ -87,15 +117,18 @@ function RelatedCard({ post }) {
 }
 
 const BlogShow = ({ post, related }) => {
+    // One measure for the whole article column, so the header, body and
+    // footer all share the same left edge.
+    const column = 'mx-auto w-full max-w-[44rem]';
+
     return (
         <>
             <ReadingProgress />
 
             <article>
-                {/* Header */}
-                <header className="pt-20 md:pt-32">
+                <header className="pt-32 md:pt-44">
                     <div className="container mx-auto px-6 lg:px-8">
-                        <AnimatedSection className="mx-auto max-w-3xl">
+                        <AnimatedSection className={column}>
                             <Link
                                 href="/blog"
                                 className="mb-10 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -105,12 +138,12 @@ const BlogShow = ({ post, related }) => {
                             </Link>
 
                             {post.categories?.length > 0 && (
-                                <div className="mb-6 flex flex-wrap gap-2">
+                                <div className="mb-6 flex flex-wrap gap-4">
                                     {post.categories.map((c) => (
                                         <Link
                                             key={c.slug}
                                             href={`/blog?category=${c.slug}`}
-                                            className="rounded-full bg-muted px-3 py-1.5 text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-foreground"
+                                            className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
                                         >
                                             {c.name}
                                         </Link>
@@ -118,7 +151,7 @@ const BlogShow = ({ post, related }) => {
                                 </div>
                             )}
 
-                            <h1 className="text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl">
+                            <h1 className="text-balance text-4xl font-bold leading-[1.05] tracking-tight md:text-5xl lg:text-[3.5rem]">
                                 {post.title}
                             </h1>
 
@@ -128,65 +161,81 @@ const BlogShow = ({ post, related }) => {
                                 </p>
                             )}
 
-                            <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-border pt-8 text-sm text-muted-foreground">
-                                {post.author && (
-                                    <>
-                                        <span className="font-medium text-foreground">
-                                            {post.author}
-                                        </span>
-                                        <span>&middot;</span>
-                                    </>
-                                )}
-                                <time dateTime={post.published_at}>
-                                    {post.published_label}
-                                </time>
-                                <span>&middot;</span>
-                                <span>{post.reading_minutes} min read</span>
-
-                                <div className="ml-auto">
-                                    <CopyLinkButton />
+                            <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-y border-border py-5">
+                                <div className="flex items-center gap-3">
+                                    {post.author && (
+                                        <AuthorMark name={post.author} />
+                                    )}
+                                    <div className="text-sm leading-tight">
+                                        {post.author && (
+                                            <p className="font-medium text-foreground">
+                                                {post.author}
+                                            </p>
+                                        )}
+                                        <p className="text-muted-foreground">
+                                            <time dateTime={post.published_at}>
+                                                {post.published_label}
+                                            </time>
+                                            {' · '}
+                                            {post.reading_minutes} min read
+                                        </p>
+                                    </div>
                                 </div>
+
+                                <CopyLinkButton />
                             </div>
                         </AnimatedSection>
                     </div>
                 </header>
 
-                {/* Cover */}
+                {/* Cover — wider than the text column for a deliberate break */}
                 {post.cover_url && (
-                    <div className="container mx-auto px-6 py-12 lg:px-8 md:py-16">
+                    <div className="container mx-auto px-6 py-12 md:py-16 lg:px-8">
                         <AnimatedSection className="mx-auto max-w-5xl">
-                            <div className="aspect-[21/9] overflow-hidden rounded-3xl bg-muted">
-                                <img
-                                    src={post.cover_url}
-                                    alt={post.cover_alt}
-                                    className="h-full w-full object-cover"
-                                />
+                            <div className="aspect-[2/1] overflow-hidden rounded-3xl bg-muted">
+                                <PostCover post={post} sizes="100vw" />
                             </div>
                         </AnimatedSection>
                     </div>
                 )}
 
-                {/* Body */}
-                <div className="container mx-auto px-6 pb-20 lg:px-8 md:pb-28">
+                <div className="container mx-auto px-6 lg:px-8">
                     <div
-                        className="prose prose-neutral prose-lg mx-auto max-w-3xl
-                                   prose-headings:font-bold prose-headings:tracking-tight
-                                   prose-a:text-foreground prose-a:underline-offset-4
-                                   prose-blockquote:border-l-foreground prose-blockquote:not-italic
-                                   prose-img:rounded-2xl
-                                   prose-pre:rounded-2xl prose-pre:bg-foreground prose-pre:text-background"
+                        className={`article-body ${column} ${post.cover_url ? 'pb-20 md:pb-28' : 'py-12 pb-20 md:py-16 md:pb-28'}`}
                         dangerouslySetInnerHTML={{ __html: post.html }}
                     />
+
+                    {/* Footer shares the article measure so nothing shifts */}
+                    <div className={`${column} border-t border-border py-10`}>
+                        <div className="flex flex-wrap items-center justify-between gap-4">
+                            <Link
+                                href="/blog"
+                                className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                                <ArrowLeft className="h-4 w-4" />
+                                All articles
+                            </Link>
+                            <CopyLinkButton />
+                        </div>
+                    </div>
                 </div>
             </article>
 
-            {/* Related */}
             {related.length > 0 && (
                 <section className="border-t border-border py-16 md:py-24">
                     <div className="container mx-auto px-6 lg:px-8">
-                        <h2 className="mb-10 text-2xl font-bold tracking-tight md:text-3xl">
-                            Keep reading
-                        </h2>
+                        <div className="mb-12 flex items-baseline justify-between">
+                            <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                Keep reading
+                            </h2>
+                            <Link
+                                href="/blog"
+                                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                                View all
+                                <ArrowUpRight className="h-3.5 w-3.5" />
+                            </Link>
+                        </div>
 
                         <div className="grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
                             {related.map((item) => (

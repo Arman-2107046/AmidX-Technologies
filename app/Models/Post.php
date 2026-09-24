@@ -71,11 +71,15 @@ class Post extends Model
     }
 
     /**
-     * Rendered Markdown, for the public post page.
+     * The post body, ready to render.
+     *
+     * Bodies are authored in the rich text editor and stored as HTML, so
+     * this is a pass-through. Legacy Markdown rows were converted by the
+     * 2026_01_01_000008 migration.
      */
     public function renderedBody(): string
     {
-        return $this->body ? Str::markdown($this->body) : '';
+        return (string) ($this->body ?? '');
     }
 
     /**
