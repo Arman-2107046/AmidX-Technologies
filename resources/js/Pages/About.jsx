@@ -1,4 +1,5 @@
 import PublicLayout from '@/Layouts/PublicLayout';
+import { useContent } from '@/lib/content';
 import { Head, Link } from '@inertiajs/react';
 import { Button } from '@/Components/ui/button';
 import AnimatedSection from '@/Components/AnimatedSection';
@@ -264,6 +265,8 @@ const technologies = [
 ];
 
 const About = () => {
+  const t = useContent();
+
   return (
     <div className="min-h-screen bg-background pt-20">
       {/* Hero */}
@@ -272,19 +275,22 @@ const About = () => {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <AnimatedSection>
               <span className="inline-block px-4 py-2 text-sm font-medium bg-muted text-muted-foreground rounded-full mb-6">
-                About Us
+                {t('hero.eyebrow', 'About Us')}
               </span>
 
               <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-8">
-                Building digital products
+                {t('hero.title', 'Building digital products')}
                 <br />
                 <span className="text-muted-foreground">
-                  with purpose and precision
+                  {t('hero.title_accent', 'with purpose and precision')}
                 </span>
               </h1>
 
               <p className="text-xl text-muted-foreground mb-8">
-                We design, build, and scale modern digital solutions, from software development to cloud infrastructure, helping businesses grow with confidence.
+                {t(
+                  'hero.subtitle',
+                  'We design, build, and scale modern digital solutions, from software development to cloud infrastructure, helping businesses grow with confidence.',
+                )}
               </p>
 
               <Button variant="premium" size="lg" asChild>
@@ -725,7 +731,11 @@ const About = () => {
 
 const AboutPage = (props) => (
     <>
-        <Head title="About" />
+        <Head title={props.meta?.title || 'About'}>
+            {props.meta?.description && (
+                <meta name="description" content={props.meta.description} />
+            )}
+        </Head>
         <About {...props} />
     </>
 );

@@ -511,7 +511,11 @@ function SolutionsPage() {
 
 const SolutionsPagePage = (props) => (
     <>
-        <Head title="Solutions" />
+        <Head title={props.meta?.title || 'Solutions'}>
+            {props.meta?.description && (
+                <meta name="description" content={props.meta.description} />
+            )}
+        </Head>
         <SolutionsPage {...props} />
     </>
 );

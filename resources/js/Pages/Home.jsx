@@ -1,4 +1,5 @@
 import PublicLayout from '@/Layouts/PublicLayout';
+import { useContent } from '@/lib/content';
 import { Head } from '@inertiajs/react';
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
@@ -57,6 +58,8 @@ function NoiseOverlay() {
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
 function Hero() {
+  const t = useContent();
+
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 0.3], [0, 160]);
   const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
@@ -99,10 +102,10 @@ function Hero() {
           transition={{ delay: 0.5, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="font-inter text-[clamp(2rem,7vw,7rem)] leading-none tracking-tight text-gray-800 mb-6 font-semibold"
         >
-          Build.<br />
-          <span className="text-gray-400 [-webkit-text-stroke:1px_rgba(255,255,255,0.3)]">Scale.</span>
+          {t('hero.line1', 'Build.')}<br />
+          <span className="text-gray-400 [-webkit-text-stroke:1px_rgba(255,255,255,0.3)]">{t('hero.line2', 'Scale.')}</span>
           <br />
-          Dominate.
+          {t('hero.line3', 'Dominate.')}
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 40 }}
@@ -110,7 +113,10 @@ function Hero() {
           transition={{ delay: 0.9, duration: 1 }}
           className="font-inter text-black/90 text-lg max-w-2xl mx-auto leading-relaxed mb-14"
         >
-          AmidX Technologies engineers full-cycle digital products built for the enterprises of tomorrow.
+          {t(
+            'hero.subtitle',
+            'AmidX Technologies engineers full-cycle digital products built for the enterprises of tomorrow.',
+          )}
         </motion.p>
       </motion.div>
       <motion.div
@@ -792,7 +798,11 @@ function AmidXSolutions() {
 
 const AmidXSolutionsPage = (props) => (
     <>
-        <Head title="Home" />
+        <Head title={props.meta?.title || 'Home'}>
+            {props.meta?.description && (
+                <meta name="description" content={props.meta.description} />
+            )}
+        </Head>
         <AmidXSolutions {...props} />
     </>
 );

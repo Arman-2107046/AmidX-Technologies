@@ -1,4 +1,5 @@
 import PublicLayout from '@/Layouts/PublicLayout';
+import { useContent } from '@/lib/content';
 import { Head, Link } from '@inertiajs/react';
 import { Button } from '@/Components/ui/button';
 import AnimatedSection from '@/Components/AnimatedSection';
@@ -251,6 +252,8 @@ const processSteps = [
 ];
 
 const Pricing = () => {
+  const t = useContent();
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 pt-20">
       {/* Hero */}
@@ -258,19 +261,22 @@ const Pricing = () => {
         <div className="container mx-auto px-6 lg:px-8 text-center">
           <AnimatedSection className="max-w-5xl mx-auto">
             <span className="inline-block px-5 py-3 text-sm font-medium bg-gray-200 text-gray-800 rounded-full mb-8">
-              Premium Engagement Models
+              {t('hero.eyebrow', 'Premium Engagement Models')}
             </span>
 
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8">
-              Tailored Digital Solutions
+              {t('hero.title', 'Tailored Digital Solutions')}
               <br />
               <span className="text-gray-500">
-                for Every Stage of Growth
+                {t('hero.title_accent', 'for Every Stage of Growth')}
               </span>
             </h1>
 
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
-              From rapid MVPs to enterprise-grade systems, our engagement models are designed to match your ambitions, technical requirements, and long-term vision.
+              {t(
+                'hero.subtitle',
+                'From rapid MVPs to enterprise-grade systems, our engagement models are designed to match your ambitions, technical requirements, and long-term vision.',
+              )}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -869,7 +875,11 @@ const Pricing = () => {
 
 const PricingPage = (props) => (
     <>
-        <Head title="Pricing" />
+        <Head title={props.meta?.title || 'Pricing'}>
+            {props.meta?.description && (
+                <meta name="description" content={props.meta.description} />
+            )}
+        </Head>
         <Pricing {...props} />
     </>
 );

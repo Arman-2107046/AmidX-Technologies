@@ -1,8 +1,11 @@
 import PublicLayout from '@/Layouts/PublicLayout';
+import { useContent } from '@/lib/content';
 import { Head } from '@inertiajs/react';
 import AnimatedSection from '@/Components/AnimatedSection';
 
 const Privacy = () => {
+  const t = useContent();
+
   return (
     <div className="min-h-screen bg-background pt-20">
 
@@ -11,18 +14,22 @@ const Privacy = () => {
         <div className="container mx-auto px-6 lg:px-8">
           <AnimatedSection className="max-w-4xl">
             <span className="inline-block px-4 py-2 text-sm font-medium bg-muted text-muted-foreground rounded-full mb-6">
-              Legal
+              {t('hero.eyebrow', 'Legal')}
             </span>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8">
-              Privacy
+              {t('hero.title', 'Privacy')}
               <br />
-              <span className="text-muted-foreground">Policy</span>
+              <span className="text-muted-foreground">
+                {t('hero.title_accent', 'Policy')}
+              </span>
             </h1>
 
             <p className="text-xl text-muted-foreground max-w-2xl">
-              We respect your privacy and are committed to protecting your personal data.
-              This policy explains how we collect, use, and safeguard your information.
+              {t(
+                'hero.subtitle',
+                'We respect your privacy and are committed to protecting your personal data. This policy explains how we collect, use, and safeguard your information.',
+              )}
             </p>
 
             <p className="text-sm text-muted-foreground mt-4">
@@ -119,7 +126,11 @@ const Privacy = () => {
 
 const PrivacyPage = (props) => (
     <>
-        <Head title="Privacy Policy" />
+        <Head title={props.meta?.title || 'Privacy Policy'}>
+            {props.meta?.description && (
+                <meta name="description" content={props.meta.description} />
+            )}
+        </Head>
         <Privacy {...props} />
     </>
 );

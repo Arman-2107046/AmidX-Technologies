@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Support\Cms;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,17 +16,17 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', fn () => Inertia::render('Home'))->name('home');
-Route::get('/solutions', fn () => Inertia::render('Solutions'))->name('solutions');
-Route::get('/about', fn () => Inertia::render('About'))->name('about');
-Route::get('/contact', fn () => Inertia::render('Contact'))->name('contact');
-Route::get('/pricing', fn () => Inertia::render('Pricing'))->name('pricing');
-Route::get('/privacy', fn () => Inertia::render('Privacy'))->name('privacy');
-Route::get('/service', fn () => Inertia::render('Service'))->name('service');
+Route::get('/', fn () => Inertia::render('Home', Cms::payload('home')))->name('home');
+Route::get('/solutions', fn () => Inertia::render('Solutions', Cms::payload('solutions')))->name('solutions');
+Route::get('/about', fn () => Inertia::render('About', Cms::payload('about')))->name('about');
+Route::get('/contact', fn () => Inertia::render('Contact', Cms::payload('contact')))->name('contact');
+Route::get('/pricing', fn () => Inertia::render('Pricing', Cms::payload('pricing')))->name('pricing');
+Route::get('/privacy', fn () => Inertia::render('Privacy', Cms::payload('privacy')))->name('privacy');
+Route::get('/service', fn () => Inertia::render('Service', Cms::payload('service')))->name('service');
 
 // The original router mapped /services and /services/* to the same page.
-Route::get('/services', fn () => Inertia::render('Solutions'))->name('services');
-Route::get('/services/{any}', fn () => Inertia::render('Solutions'))->where('any', '.*');
+Route::get('/services', fn () => Inertia::render('Solutions', Cms::payload('solutions')))->name('services');
+Route::get('/services/{any}', fn () => Inertia::render('Solutions', Cms::payload('solutions')))->where('any', '.*');
 
 /*
 |--------------------------------------------------------------------------

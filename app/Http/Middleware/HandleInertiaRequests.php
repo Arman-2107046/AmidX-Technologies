@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\Cms;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -33,6 +34,15 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'admin' => $request->user('admin')?->only([
+                    'id', 'name', 'email',
+                ]),
+            ],
+            // Global CMS settings, used by the footer and contact page.
+            'settings' => fn () => Cms::settings(),
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
             ],
         ];
     }

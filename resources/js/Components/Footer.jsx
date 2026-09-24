@@ -1,3 +1,4 @@
+import { useSetting } from '@/lib/content';
 import { Link } from '@inertiajs/react';
 import { Mail, MapPin, Phone } from 'lucide-react';
 
@@ -15,6 +16,8 @@ const footerLinks = {
 };
 
 const Footer = () => {
+    const s = useSetting();
+
     return (
         <footer className="overflow-hidden bg-foreground text-background">
             {/* Main Footer */}
@@ -42,31 +45,38 @@ const Footer = () => {
                         </Link>
 
                         <p className="mb-6 max-w-sm text-background/60">
-                            Premium software, UI/UX, and cloud infrastructure,
-                            from domain to deployment.
+                            {s(
+                                'company.tagline',
+                                'Premium software, UI/UX, and cloud infrastructure, from domain to deployment.',
+                            )}
                         </p>
 
                         <div className="space-y-3">
                             <a
-                                href="mailto:business@amidx.net"
+                                href={`mailto:${s('contact.email', 'business@amidx.net')}`}
                                 className="flex items-center gap-3 text-background/60 transition-colors hover:text-background"
                             >
                                 <Mail className="h-5 w-5" />
-                                business@amidx.net
+                                {s('contact.email', 'business@amidx.net')}
                             </a>
 
                             <a
-                                href="tel:+8801306789067"
+                                href={`tel:${s('contact.phone_link', '+8801306789067')}`}
                                 className="flex items-center gap-3 text-background/60 transition-colors hover:text-background"
                             >
                                 <Phone className="h-5 w-5" />
-                                +880 1306-789067, +880 1988-008844
+                                {s(
+                                    'contact.phone',
+                                    '+880 1306-789067, +880 1988-008844',
+                                )}
                             </a>
 
                             <div className="flex items-start gap-3 text-background/60">
                                 <MapPin className="mt-0.5 h-5 w-5 shrink-0" />
-                                House 11, Road 18, Sector 4, Uttara, Dhaka,
-                                Bangladesh
+                                {s(
+                                    'contact.address',
+                                    'House 11, Road 18, Sector 4, Uttara, Dhaka, Bangladesh',
+                                )}
                             </div>
                         </div>
                     </div>
@@ -113,17 +123,27 @@ const Footer = () => {
                 {/* Bottom Bar */}
                 <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-background/10 pt-6 text-sm text-background/40 md:flex-row">
                     <p>
-                        © {new Date().getFullYear()} AmidX. All rights reserved.
+                        © {new Date().getFullYear()}{' '}
+                        {s('company.name', 'AmidX')}. All rights reserved.
                     </p>
 
                     <div className="flex gap-4">
-                        <a href="#" className="hover:text-background">
+                        <a
+                            href={s('social.linkedin', '#')}
+                            className="hover:text-background"
+                        >
                             LinkedIn
                         </a>
-                        <a href="#" className="hover:text-background">
+                        <a
+                            href={s('social.twitter', '#')}
+                            className="hover:text-background"
+                        >
                             Twitter
                         </a>
-                        <a href="#" className="hover:text-background">
+                        <a
+                            href={s('social.github', '#')}
+                            className="hover:text-background"
+                        >
                             GitHub
                         </a>
                     </div>

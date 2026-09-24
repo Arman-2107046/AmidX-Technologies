@@ -1,4 +1,5 @@
 import PublicLayout from '@/Layouts/PublicLayout';
+import { useContent } from '@/lib/content';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import { Button } from '@/Components/ui/button';
@@ -9,6 +10,8 @@ import { Mail, MapPin, Phone, Send, ArrowRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const Contact = () => {
+  const t = useContent();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,8 +23,11 @@ const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     toast({
-      title: 'Message received',
-      description: 'Our team will get back to you within 24 hours.',
+      title: t('form.success_title', 'Message received'),
+      description: t(
+        'form.success_body',
+        'Our team will get back to you within 24 hours.',
+      ),
     });
     setFormData({
       name: '',
@@ -39,15 +45,20 @@ const Contact = () => {
         <div className="container mx-auto px-6 lg:px-8">
           <AnimatedSection className="max-w-4xl">
             <span className="inline-block px-4 py-2 text-sm font-medium bg-muted text-muted-foreground rounded-full mb-6">
-              Contact
+              {t('hero.eyebrow', 'Contact')}
             </span>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8">
-              Let’s build something
+              {t('hero.title', 'Let’s build something')}
               <br />
-              <span className="text-muted-foreground">exceptional</span>
+              <span className="text-muted-foreground">
+                {t('hero.title_accent', 'exceptional')}
+              </span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl">
-              Tell us about your product or idea. We’ll review your requirements and respond within 24 hours.
+              {t(
+                'hero.subtitle',
+                'Tell us about your product or idea. We’ll review your requirements and respond within 24 hours.',
+              )}
             </p>
           </AnimatedSection>
         </div>
@@ -232,7 +243,11 @@ const Contact = () => {
 
 const ContactPage = (props) => (
     <>
-        <Head title="Contact" />
+        <Head title={props.meta?.title || 'Contact'}>
+            {props.meta?.description && (
+                <meta name="description" content={props.meta.description} />
+            )}
+        </Head>
         <Contact {...props} />
     </>
 );
