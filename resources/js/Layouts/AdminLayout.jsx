@@ -3,7 +3,9 @@ import {
     FileText,
     LayoutDashboard,
     LogOut,
+    Newspaper,
     Settings as SettingsIcon,
+    Tags,
     Users,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -11,6 +13,8 @@ import { useEffect, useState } from 'react';
 const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, exact: true },
     { name: 'Pages', href: '/admin/pages', icon: FileText },
+    { name: 'Blog', href: '/admin/posts', icon: Newspaper },
+    { name: 'Categories', href: '/admin/categories', icon: Tags },
     { name: 'Settings', href: '/admin/settings', icon: SettingsIcon },
     { name: 'Administrators', href: '/admin/admins', icon: Users },
 ];

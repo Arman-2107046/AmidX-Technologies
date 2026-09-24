@@ -188,6 +188,19 @@ class AdminDatabaseSeeder extends Seeder
                 ],
             ],
             [
+                'slug' => 'blog',
+                'name' => 'Blog',
+                'route' => '/blog',
+                'meta_title' => 'Blog',
+                'meta_description' => 'Deep dives on software architecture, cloud infrastructure and product design from the AmidX team.',
+                'blocks' => [
+                    ['hero', 'hero.eyebrow', 'Eyebrow label', 'text', 'Insights'],
+                    ['hero', 'hero.title', 'Hero title', 'text', 'Engineering'],
+                    ['hero', 'hero.title_accent', 'Hero title (muted line)', 'text', 'notes & perspectives'],
+                    ['hero', 'hero.subtitle', 'Hero subtitle', 'textarea', 'Deep dives on software architecture, cloud infrastructure and product design from the AmidX team.'],
+                ],
+            ],
+            [
                 'slug' => 'privacy',
                 'name' => 'Privacy Policy',
                 'route' => '/privacy',

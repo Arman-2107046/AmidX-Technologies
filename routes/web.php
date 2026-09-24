@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ProfileController;
 use App\Support\Cms;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,10 @@ Route::get('/contact', fn () => Inertia::render('Contact', Cms::payload('contact
 Route::get('/pricing', fn () => Inertia::render('Pricing', Cms::payload('pricing')))->name('pricing');
 Route::get('/privacy', fn () => Inertia::render('Privacy', Cms::payload('privacy')))->name('privacy');
 Route::get('/service', fn () => Inertia::render('Service', Cms::payload('service')))->name('service');
+
+// Blog
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // The original router mapped /services and /services/* to the same page.
 Route::get('/services', fn () => Inertia::render('Solutions', Cms::payload('solutions')))->name('services');
