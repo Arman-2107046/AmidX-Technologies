@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\TechnologyController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\JobController;
@@ -57,6 +59,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('categories', [CategoryController::class, 'store'])->name('categories.store');
         Route::put('categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
         Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+        // Clients
+        Route::get('clients', [ClientController::class, 'index'])->name('clients.index');
+        Route::get('clients/create', [ClientController::class, 'create'])->name('clients.create');
+        Route::post('clients', [ClientController::class, 'store'])->name('clients.store');
+        Route::get('clients/{client}/edit', [ClientController::class, 'edit'])->name('clients.edit');
+        Route::post('clients/{client}', [ClientController::class, 'update'])->name('clients.update');
+        Route::delete('clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
+
+        // Technologies
+        Route::get('technologies', [TechnologyController::class, 'index'])->name('technologies.index');
+        Route::get('technologies/create', [TechnologyController::class, 'create'])->name('technologies.create');
+        Route::post('technologies', [TechnologyController::class, 'store'])->name('technologies.store');
+        Route::get('technologies/{technology}/edit', [TechnologyController::class, 'edit'])->name('technologies.edit');
+        Route::post('technologies/{technology}', [TechnologyController::class, 'update'])->name('technologies.update');
+        Route::delete('technologies/{technology}', [TechnologyController::class, 'destroy'])->name('technologies.destroy');
 
         // FAQ
         Route::get('faqs', [FaqController::class, 'index'])->name('faqs.index');

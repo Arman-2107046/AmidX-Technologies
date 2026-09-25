@@ -63,6 +63,8 @@ class SitemapController extends Controller
             ['label' => 'Portfolio', 'href' => '/portfolio', 'priority' => '0.9'],
             ['label' => 'Pricing', 'href' => '/pricing', 'priority' => '0.8'],
             ['label' => 'About', 'href' => '/about', 'priority' => '0.8'],
+            ['label' => 'Clients', 'href' => '/clients', 'priority' => '0.8'],
+            ['label' => 'Technologies', 'href' => '/technologies', 'priority' => '0.7'],
             ['label' => 'Blog', 'href' => '/blog', 'priority' => '0.8'],
             ['label' => 'FAQ', 'href' => '/faq', 'priority' => '0.7'],
             ['label' => 'Careers', 'href' => '/careers', 'priority' => '0.7'],

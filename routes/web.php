@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CareersController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\TechnologyController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\PortfolioController;
@@ -28,6 +30,10 @@ Route::get('/contact', fn () => Inertia::render('Contact', Cms::payload('contact
 Route::get('/pricing', fn () => Inertia::render('Pricing', Cms::payload('pricing')))->name('pricing');
 Route::get('/privacy', fn () => Inertia::render('Privacy', Cms::payload('privacy')))->name('privacy');
 Route::get('/service', fn () => Inertia::render('Service', Cms::payload('service')))->name('service');
+
+// Clients and the technology stack
+Route::get('/clients', [ClientController::class, 'index'])->name('clients');
+Route::get('/technologies', [TechnologyController::class, 'index'])->name('technologies');
 
 // FAQ, careers, sitemap and the remaining legal page
 Route::get('/faq', [FaqController::class, 'index'])->name('faq');
