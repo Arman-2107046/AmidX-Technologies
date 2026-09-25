@@ -26,10 +26,25 @@ export default {
         extend: {
             fontFamily: {
                 sans: [
-                    'Inter',
+                    // Apple devices render San Francisco through these two
+                    // aliases: -apple-system for Safari, BlinkMacSystemFont
+                    // for Chrome on macOS. Naming SF Pro directly also picks
+                    // it up for anyone who has it installed locally.
+                    //
+                    // SF Pro is deliberately NOT self-hosted: Apple's licence
+                    // covers use on Apple platforms, not redistribution as a
+                    // webfont, so @font-face would not be permitted.
                     '-apple-system',
                     'BlinkMacSystemFont',
+                    'SF Pro Text',
+                    'SF Pro Display',
+                    // Everything else falls back to Inter, which is loaded
+                    // from Google Fonts.
+                    'Inter',
                     'Segoe UI',
+                    'Roboto',
+                    'Helvetica Neue',
+                    'Arial',
                     'sans-serif',
                 ],
             },
