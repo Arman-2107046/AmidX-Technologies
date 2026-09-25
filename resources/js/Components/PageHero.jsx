@@ -1,15 +1,19 @@
 import GenerativeCover from '@/Components/GenerativeCover';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import {
+    motion,
+    useReducedMotion,
+    useScroll,
+    useTransform,
+} from 'framer-motion';
 import { useRef } from 'react';
 
 const EASE = [0.16, 1, 0.3, 1];
 
 /**
- * A line of type that rises out of a mask.
+ * A line of type rising out of a mask.
  *
- * The mask is the parent's overflow-hidden, so the text is clipped rather
- * than faded — the effect reads as print coming off a press instead of a
- * generic fade-in.
+ * Clipped by the parent rather than faded, which reads as print coming off
+ * a press instead of a generic fade-in.
  */
 function MaskedLine({ children, delay = 0, className = '' }) {
     const reduced = useReducedMotion();
@@ -19,12 +23,12 @@ function MaskedLine({ children, delay = 0, className = '' }) {
     }
 
     return (
-        <span className="block overflow-hidden pb-[0.08em]">
+        <span className="block overflow-hidden pb-[0.06em]">
             <motion.span
                 className={`block ${className}`}
-                initial={{ y: '110%' }}
+                initial={{ y: '112%' }}
                 animate={{ y: 0 }}
-                transition={{ duration: 1, delay, ease: EASE }}
+                transition={{ duration: 1.05, delay, ease: EASE }}
             >
                 {children}
             </motion.span>
@@ -38,9 +42,9 @@ function Fade({ children, delay = 0, className = '' }) {
     return (
         <motion.div
             className={className}
-            initial={reduced ? false : { opacity: 0, y: 16 }}
+            initial={reduced ? false : { opacity: 0, y: 14 }}
             animate={reduced ? false : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay, ease: EASE }}
+            transition={{ duration: 0.85, delay, ease: EASE }}
         >
             {children}
         </motion.div>
@@ -48,11 +52,11 @@ function Fade({ children, delay = 0, className = '' }) {
 }
 
 /**
- * Shared hero band for the secondary pages.
+ * Shared hero band.
  *
- * Text rises out of a mask in a stagger, while the image settles from a
- * slight over-scale and then drifts on scroll. Everything collapses to a
- * static render when the visitor prefers reduced motion.
+ * Composition, not decoration: a hairline index rule, display type that
+ * rises out of a mask, and media that wipes open rather than fading in.
+ * Everything renders statically under prefers-reduced-motion.
  */
 export default function PageHero({
     eyebrow,
@@ -62,6 +66,7 @@ export default function PageHero({
     image,
     imageAlt,
     seed,
+    meta,
     children,
     align = 'split',
 }) {
@@ -73,47 +78,56 @@ export default function PageHero({
         offset: ['start start', 'end start'],
     });
 
-    // Gentle parallax: the image drifts slower than the page.
-    const y = useTransform(scrollYProgress, [0, 1], ['0%', '14%']);
-    const scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+    // The media drifts slower than the page, and the type lifts away.
+    const mediaY = useTransform(scrollYProgress, [0, 1], ['0%', '12%']);
+    const mediaScale = useTransform(scrollYProgress, [0, 1], [1, 1.07]);
+    const textY = useTransform(scrollYProgress, [0, 1], ['0%', '-18%']);
+    const textFade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
     const hasMedia = align !== 'text';
 
     return (
         <section
             ref={ref}
-            className="relative overflow-hidden border-b border-border pb-16 pt-32 md:pb-24 md:pt-44"
+            className="relative overflow-hidden border-b border-border pb-20 pt-32 md:pb-28 md:pt-40"
         >
-            {/* Faint grid, anchored to the hero, fading out at the baseline */}
-            <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 opacity-[0.55] [mask-image:linear-gradient(to_bottom,black,transparent)]"
-            >
-                <div className="dot-bg h-full w-full" />
-            </div>
-
             <div className="container relative mx-auto px-6 lg:px-8">
+                {/* Index rule — the eyebrow sits on a hairline rather than
+                    floating above the headline like a generic tag. */}
+                <Fade delay={0.04}>
+                    <div className="mb-12 flex items-center gap-6 md:mb-16">
+                        {eyebrow && (
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+                                {eyebrow}
+                            </span>
+                        )}
+                        <span className="h-px flex-1 bg-border" />
+                        {meta && (
+                            <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                                {meta}
+                            </span>
+                        )}
+                    </div>
+                </Fade>
+
                 <div
                     className={
                         hasMedia
-                            ? 'grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16'
+                            ? 'grid items-center gap-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-20'
                             : ''
                     }
                 >
-                    <div className={hasMedia ? '' : 'max-w-4xl'}>
-                        {eyebrow && (
-                            <Fade delay={0.05}>
-                                <span className="mb-6 inline-block text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-                                    {eyebrow}
-                                </span>
-                            </Fade>
-                        )}
-
-                        <h1 className="text-balance text-5xl font-bold leading-[0.95] tracking-tight md:text-6xl lg:text-7xl">
-                            <MaskedLine delay={0.12}>{title}</MaskedLine>
+                    <motion.div
+                        style={
+                            reduced ? undefined : { y: textY, opacity: textFade }
+                        }
+                        className={hasMedia ? '' : 'max-w-4xl'}
+                    >
+                        <h1 className="text-balance text-[clamp(2.75rem,7vw,5.5rem)] font-bold leading-[0.92] tracking-[-0.035em]">
+                            <MaskedLine delay={0.1}>{title}</MaskedLine>
                             {titleAccent && (
                                 <MaskedLine
-                                    delay={0.24}
+                                    delay={0.22}
                                     className="text-muted-foreground"
                                 >
                                     {titleAccent}
@@ -122,33 +136,49 @@ export default function PageHero({
                         </h1>
 
                         {subtitle && (
-                            <Fade delay={0.42}>
-                                <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+                            <Fade delay={0.44}>
+                                <p className="mt-8 max-w-[46ch] text-lg leading-relaxed text-muted-foreground md:text-xl">
                                     {subtitle}
                                 </p>
                             </Fade>
                         )}
 
-                        {children && <Fade delay={0.54}>{children}</Fade>}
-                    </div>
+                        {children && <Fade delay={0.56}>{children}</Fade>}
+                    </motion.div>
 
                     {hasMedia && (
                         <motion.div
-                            initial={reduced ? false : { opacity: 0, scale: 1.06 }}
-                            animate={reduced ? false : { opacity: 1, scale: 1 }}
-                            transition={{ duration: 1.2, delay: 0.2, ease: EASE }}
+                            // A wipe rather than a fade: the frame opens from
+                            // the bottom, so the image arrives composed.
+                            initial={
+                                reduced
+                                    ? false
+                                    : { clipPath: 'inset(100% 0 0 0)' }
+                            }
+                            animate={
+                                reduced ? false : { clipPath: 'inset(0% 0 0 0)' }
+                            }
+                            transition={{
+                                duration: 1.25,
+                                delay: 0.25,
+                                ease: EASE,
+                            }}
                             className="relative"
                         >
-                            <div className="relative aspect-[5/4] overflow-hidden rounded-3xl bg-muted lg:aspect-[4/3]">
+                            <div className="relative aspect-[4/3] overflow-hidden bg-muted lg:aspect-square">
                                 <motion.div
-                                    style={reduced ? undefined : { y, scale }}
+                                    style={
+                                        reduced
+                                            ? undefined
+                                            : { y: mediaY, scale: mediaScale }
+                                    }
                                     className="absolute inset-0 h-full w-full"
                                 >
                                     {image ? (
                                         <img
                                             src={image}
                                             alt={imageAlt || ''}
-                                            className="h-full w-full object-cover"
+                                            className="h-full w-full object-cover grayscale"
                                         />
                                     ) : (
                                         <GenerativeCover
@@ -158,10 +188,40 @@ export default function PageHero({
                                     )}
                                 </motion.div>
                             </div>
+
+                            {/* Caption rule, tying the media back to the grid */}
+                            {imageAlt && image && (
+                                <Fade delay={0.9}>
+                                    <p className="mt-4 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                                        {imageAlt}
+                                    </p>
+                                </Fade>
+                            )}
                         </motion.div>
                     )}
                 </div>
             </div>
+
+            {/* Scroll cue — a line that breathes rather than a bouncing arrow */}
+            {!reduced && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.4, duration: 0.8 }}
+                    aria-hidden="true"
+                    className="pointer-events-none absolute bottom-0 left-1/2 hidden -translate-x-1/2 lg:block"
+                >
+                    <motion.span
+                        animate={{ scaleY: [0.25, 1, 0.25] }}
+                        transition={{
+                            repeat: Infinity,
+                            duration: 2.6,
+                            ease: 'easeInOut',
+                        }}
+                        className="block h-14 w-px origin-bottom bg-foreground/25"
+                    />
+                </motion.div>
+            )}
         </section>
     );
 }
