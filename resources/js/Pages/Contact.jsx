@@ -1,3 +1,4 @@
+import PageHero from '@/Components/PageHero';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { useContent } from '@/lib/content';
 import { Head } from '@inertiajs/react';
@@ -9,7 +10,7 @@ import AnimatedSection from '@/Components/AnimatedSection';
 import { Mail, MapPin, Phone, Send, ArrowRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
-const Contact = () => {
+const Contact = ({ meta }) => {
   const t = useContent();
 
   const [formData, setFormData] = useState({
@@ -40,29 +41,18 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20">
-      {/* Hero */}
-      <section className="py-20 md:py-32">
-        <div className="container mx-auto px-6 lg:px-8">
-          <AnimatedSection className="max-w-4xl">
-            <span className="inline-block px-4 py-2 text-sm font-medium bg-muted text-muted-foreground rounded-full mb-6">
-              {t('hero.eyebrow', 'Contact')}
-            </span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8">
-              {t('hero.title', 'Let’s build something')}
-              <br />
-              <span className="text-muted-foreground">
-                {t('hero.title_accent', 'exceptional')}
-              </span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl">
-              {t(
-                'hero.subtitle',
-                'Tell us about your product or idea. We’ll review your requirements and respond within 24 hours.',
-              )}
-            </p>
-          </AnimatedSection>
-        </div>
-      </section>
+      <PageHero
+                eyebrow={t('hero.eyebrow', 'Contact')}
+                title={t('hero.title', 'Let’s build something')}
+                titleAccent={t('hero.title_accent', 'exceptional')}
+                subtitle={t(
+                    'hero.subtitle',
+                    'Tell us about your product or idea. We’ll review your requirements and respond within 24 hours.',
+                )}
+                image={meta?.hero_image}
+                imageAlt={meta?.hero_image_alt}
+                seed="contact"
+            />
 
       {/* Contact Section */}
       <section className="py-20 border-t border-border">

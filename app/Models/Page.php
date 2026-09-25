@@ -16,6 +16,8 @@ class Page extends Model
         'route',
         'meta_title',
         'meta_description',
+        'hero_image',
+        'hero_image_alt',
         'is_published',
         'sort_order',
     ];

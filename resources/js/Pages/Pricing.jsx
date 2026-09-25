@@ -1,3 +1,4 @@
+import PageHero from '@/Components/PageHero';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { useContent } from '@/lib/content';
 import { Head, Link } from '@inertiajs/react';
@@ -251,51 +252,23 @@ const processSteps = [
   },
 ];
 
-const Pricing = () => {
+const Pricing = ({ meta }) => {
   const t = useContent();
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 pt-20">
-      {/* Hero */}
-      <section className="py-20 md:py-32 bg-gray-50">
-        <div className="container mx-auto px-6 lg:px-8 text-center">
-          <AnimatedSection className="max-w-5xl mx-auto">
-            <span className="inline-block px-5 py-3 text-sm font-medium bg-gray-200 text-gray-800 rounded-full mb-8">
-              {t('hero.eyebrow', 'Premium Engagement Models')}
-            </span>
-
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8">
-              {t('hero.title', 'Tailored Digital Solutions')}
-              <br />
-              <span className="text-gray-500">
-                {t('hero.title_accent', 'for Every Stage of Growth')}
-              </span>
-            </h1>
-
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
-              {t(
-                'hero.subtitle',
-                'From rapid MVPs to enterprise-grade systems, our engagement models are designed to match your ambitions, technical requirements, and long-term vision.',
-              )}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="default" size="lg" className="bg-gray-900 hover:bg-gray-800 text-white" asChild>
-                <Link href="/contact">
-                  Schedule Consultation
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Link>
-              </Button>
-              {/* <Button variant="outline" size="lg" className="border-gray-300 hover:bg-gray-100" asChild>
-                <a href="#comparison">
-                  Compare Plans
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </a>
-              </Button> */}
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
+      <PageHero
+        eyebrow={t('hero.eyebrow', 'Premium Engagement Models')}
+        title={t('hero.title', 'Tailored Digital Solutions')}
+        titleAccent={t('hero.title_accent', 'for Every Stage of Growth')}
+        subtitle={t(
+          'hero.subtitle',
+          'From rapid MVPs to enterprise-grade systems, our engagement models are designed to match your ambitions, technical requirements, and long-term vision.',
+        )}
+        image={meta?.hero_image}
+        imageAlt={meta?.hero_image_alt}
+        seed="pricing"
+      />
 
       {/* Pricing Cards */}
       <section className="py-20 border-t border-gray-200 bg-white" id="plans">

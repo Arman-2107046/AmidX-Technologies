@@ -1,3 +1,4 @@
+import PageHero from '@/Components/PageHero';
 import AnimatedSection from '@/Components/AnimatedSection';
 import PostCover from '@/Components/PostCover';
 import PublicLayout from '@/Layouts/PublicLayout';
@@ -202,45 +203,25 @@ function PostCard({ post, index }) {
     );
 }
 
-const Blog = ({ featured, posts, categories, filters }) => {
+const Blog = ({ featured, posts, categories, filters, meta }) => {
     const t = useContent();
     const isFiltered = Boolean(filters.search || filters.category);
     const hasPosts = featured || posts.data.length > 0;
 
     return (
         <>
-            {/* Hero */}
-            <section className="border-b border-border pb-14 pt-32 md:pb-20 md:pt-44">
-                <div className="container mx-auto px-6 lg:px-8">
-                    <AnimatedSection>
-                        <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
-                            <div className="max-w-3xl">
-                                <span className="mb-6 inline-block text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-                                    {t('hero.eyebrow', 'Insights')}
-                                </span>
-
-                                <h1 className="text-balance text-5xl font-bold leading-[0.95] tracking-tight md:text-6xl lg:text-7xl">
-                                    {t('hero.title', 'Engineering')}
-                                    <br />
-                                    <span className="text-muted-foreground">
-                                        {t(
-                                            'hero.title_accent',
-                                            'notes & perspectives',
-                                        )}
-                                    </span>
-                                </h1>
-                            </div>
-
-                            <p className="max-w-sm text-lg leading-relaxed text-muted-foreground lg:pb-3 lg:text-right">
-                                {t(
-                                    'hero.subtitle',
-                                    'Deep dives on software architecture, cloud infrastructure and product design from the AmidX team.',
-                                )}
-                            </p>
-                        </div>
-                    </AnimatedSection>
-                </div>
-            </section>
+            <PageHero
+                eyebrow={t('hero.eyebrow', 'Insights')}
+                title={t('hero.title', 'Engineering')}
+                titleAccent={t('hero.title_accent', 'notes & perspectives')}
+                subtitle={t(
+                    'hero.subtitle',
+                    'Deep dives on software architecture, cloud infrastructure and product design from the AmidX team.',
+                )}
+                image={meta?.hero_image}
+                imageAlt={meta?.hero_image_alt}
+                seed="blog"
+            />
 
             {/* Filters */}
             <section className="sticky top-20 z-30 border-b border-border bg-background/85 py-4 backdrop-blur-xl">

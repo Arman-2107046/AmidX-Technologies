@@ -6,6 +6,7 @@ use App\Models\ContentBlock;
 use App\Models\Page;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Reads CMS content for the public site.
@@ -61,6 +62,10 @@ class Cms
                 return $page ? [
                     'title' => $page->meta_title,
                     'description' => $page->meta_description,
+                    'hero_image' => $page->hero_image
+                        ? Storage::url($page->hero_image)
+                        : null,
+                    'hero_image_alt' => $page->hero_image_alt,
                 ] : [];
             } catch (\Throwable) {
                 return [];

@@ -8,6 +8,7 @@ use App\Models\Page;
 use App\Support\Cms;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -39,10 +40,16 @@ class PageController extends Controller
             ]);
 
         return Inertia::render('Admin/Pages/Edit', [
-            'page' => $page->only([
-                'id', 'slug', 'name', 'route',
-                'meta_title', 'meta_description', 'is_published',
-            ]),
+            'page' => [
+                ...$page->only([
+                    'id', 'slug', 'name', 'route',
+                    'meta_title', 'meta_description', 'is_published',
+                    'hero_image_alt',
+                ]),
+                'hero_image_url' => $page->hero_image
+                    ? Storage::url($page->hero_image)
+                    : null,
+            ],
             // Grouped so the editor can render one card per section.
             'sections' => $blocks->groupBy('section'),
         ]);
@@ -54,15 +61,32 @@ class PageController extends Controller
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:1000'],
             'is_published' => ['boolean'],
+            'hero_image' => ['nullable', 'image', 'max:6144'],
+            'hero_image_alt' => ['nullable', 'string', 'max:255'],
+            'remove_hero' => ['boolean'],
             'blocks' => ['array'],
             'blocks.*' => ['nullable', 'string'],
         ]);
 
-        $page->update([
+        $page->fill([
             'meta_title' => $validated['meta_title'] ?? null,
             'meta_description' => $validated['meta_description'] ?? null,
             'is_published' => $validated['is_published'] ?? true,
+            'hero_image_alt' => $validated['hero_image_alt'] ?? null,
         ]);
+
+        if ($request->hasFile('hero_image')) {
+            // Replace rather than accumulate orphaned uploads.
+            if ($page->hero_image) {
+                Storage::disk('public')->delete($page->hero_image);
+            }
+            $page->hero_image = $request->file('hero_image')->store('heroes', 'public');
+        } elseif ($request->boolean('remove_hero') && $page->hero_image) {
+            Storage::disk('public')->delete($page->hero_image);
+            $page->hero_image = null;
+        }
+
+        $page->save();
 
         // blocks arrive keyed by block id.
         foreach ($validated['blocks'] ?? [] as $id => $value) {

@@ -4,8 +4,11 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\JobController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,10 +45,34 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('posts/{post}', [PostController::class, 'update'])->name('posts.update');
         Route::delete('posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 
+        // Portfolio
+        Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
+        Route::get('projects/create', [ProjectController::class, 'create'])->name('projects.create');
+        Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
+        Route::get('projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+        Route::post('projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+        Route::delete('projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
         Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::post('categories', [CategoryController::class, 'store'])->name('categories.store');
         Route::put('categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
         Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+        // FAQ
+        Route::get('faqs', [FaqController::class, 'index'])->name('faqs.index');
+        Route::get('faqs/create', [FaqController::class, 'create'])->name('faqs.create');
+        Route::post('faqs', [FaqController::class, 'store'])->name('faqs.store');
+        Route::get('faqs/{faq}/edit', [FaqController::class, 'edit'])->name('faqs.edit');
+        Route::put('faqs/{faq}', [FaqController::class, 'update'])->name('faqs.update');
+        Route::delete('faqs/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy');
+
+        // Careers
+        Route::get('jobs', [JobController::class, 'index'])->name('jobs.index');
+        Route::get('jobs/create', [JobController::class, 'create'])->name('jobs.create');
+        Route::post('jobs', [JobController::class, 'store'])->name('jobs.store');
+        Route::get('jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
+        Route::put('jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
+        Route::delete('jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
 
         // Global site settings
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');

@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CareersController;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Support\Cms;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +28,18 @@ Route::get('/contact', fn () => Inertia::render('Contact', Cms::payload('contact
 Route::get('/pricing', fn () => Inertia::render('Pricing', Cms::payload('pricing')))->name('pricing');
 Route::get('/privacy', fn () => Inertia::render('Privacy', Cms::payload('privacy')))->name('privacy');
 Route::get('/service', fn () => Inertia::render('Service', Cms::payload('service')))->name('service');
+
+// FAQ, careers, sitemap and the remaining legal page
+Route::get('/faq', [FaqController::class, 'index'])->name('faq');
+Route::get('/careers', [CareersController::class, 'index'])->name('careers.index');
+Route::get('/careers/{slug}', [CareersController::class, 'show'])->name('careers.show');
+Route::get('/cookies', fn () => Inertia::render('Cookies', Cms::payload('cookies')))->name('cookies');
+Route::get('/sitemap', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/sitemap.xml', [SitemapController::class, 'xml'])->name('sitemap.xml');
+
+// Portfolio
+Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
+Route::get('/portfolio/{slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
 
 // Blog
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');

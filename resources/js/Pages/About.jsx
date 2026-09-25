@@ -1,3 +1,4 @@
+import PageHero from '@/Components/PageHero';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { useContent } from '@/lib/content';
 import { Head, Link } from '@inertiajs/react';
@@ -264,82 +265,52 @@ const technologies = [
   },
 ];
 
-const About = () => {
+const About = ({ meta }) => {
   const t = useContent();
 
   return (
     <div className="min-h-screen bg-background pt-20">
-      {/* Hero */}
-      <section className="py-20 md:py-32">
+      <PageHero
+        eyebrow={t('hero.eyebrow', 'About Us')}
+        title={t('hero.title', 'Building digital products')}
+        titleAccent={t('hero.title_accent', 'with purpose and precision')}
+        subtitle={t(
+          'hero.subtitle',
+          'We design, build, and scale modern digital solutions, from software development to cloud infrastructure, helping businesses grow with confidence.',
+        )}
+        image={meta?.hero_image}
+        imageAlt={meta?.hero_image_alt}
+        seed="about"
+      >
+        <Button variant="premium" size="lg" className="mt-8" asChild>
+          <Link href={t('hero.cta_href', '/contact')}>
+            {t('hero.cta_label', 'Work With Us')}
+            <ArrowRight className="w-5 h-5" />
+          </Link>
+        </Button>
+      </PageHero>
+
+      {/* At a glance */}
+      <section className="border-b border-border py-16 md:py-20">
         <div className="container mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <AnimatedSection>
-              <span className="inline-block px-4 py-2 text-sm font-medium bg-muted text-muted-foreground rounded-full mb-6">
-                {t('hero.eyebrow', 'About Us')}
-              </span>
-
-              <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-8">
-                {t('hero.title', 'Building digital products')}
-                <br />
-                <span className="text-muted-foreground">
-                  {t('hero.title_accent', 'with purpose and precision')}
-                </span>
-              </h1>
-
-              <p className="text-xl text-muted-foreground mb-8">
-                {t(
-                  'hero.subtitle',
-                  'We design, build, and scale modern digital solutions, from software development to cloud infrastructure, helping businesses grow with confidence.',
-                )}
-              </p>
-
-              <Button variant="premium" size="lg" asChild>
-                <Link href="/contact">
-                  Work With Us
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-              </Button>
-            </AnimatedSection>
-
-            <AnimatedSection delay={0.2}>
-              <div className="relative bg-muted/50 rounded-2xl p-8 border border-border overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&auto=format&fit=crop"
-                  alt="Team working"
-                  className="absolute inset-0 w-full h-full object-cover opacity-20"
-                />
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 opacity-30" />
-                <div className="relative z-10 space-y-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                      <Code className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">2+ Years</h3>
-                      <p className="text-sm text-muted-foreground">Building digital products</p>
-                    </div>
+          <div className="grid gap-10 sm:grid-cols-3">
+            {[
+              { icon: Code, value: '2+ Years', label: 'Building digital products' },
+              { icon: Users, value: '50+ Clients', label: 'Across industries worldwide' },
+              { icon: Cloud, value: '99.99% Uptime', label: 'For all managed systems' },
+            ].map((stat, i) => (
+              <AnimatedSection key={stat.value} delay={i * 0.08}>
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-muted">
+                    <stat.icon className="h-6 w-6 text-foreground" />
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                      <Users className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">50+ Clients</h3>
-                      <p className="text-sm text-muted-foreground">Across industries worldwide</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                      <Server className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">99.99% Uptime</h3>
-                      <p className="text-sm text-muted-foreground">For all managed systems</p>
-                    </div>
+                  <div>
+                    <h3 className="text-lg font-semibold tracking-tight">{stat.value}</h3>
+                    <p className="text-sm text-muted-foreground">{stat.label}</p>
                   </div>
                 </div>
-              </div>
-            </AnimatedSection>
+              </AnimatedSection>
+            ))}
           </div>
         </div>
       </section>

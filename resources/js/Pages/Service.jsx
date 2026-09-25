@@ -1,43 +1,27 @@
+import PageHero from '@/Components/PageHero';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { useContent } from '@/lib/content';
 import { Head } from '@inertiajs/react';
 import AnimatedSection from '@/Components/AnimatedSection';
 
-const Service = () => {
+const Service = ({ meta }) => {
   const t = useContent();
 
   return (
     <div className="min-h-screen bg-background pt-20">
 
-      {/* Hero */}
-      <section className="py-20 md:py-32">
-        <div className="container mx-auto px-6 lg:px-8">
-          <AnimatedSection className="max-w-4xl">
-            <span className="inline-block px-4 py-2 text-sm font-medium bg-muted text-muted-foreground rounded-full mb-6">
-              {t('hero.eyebrow', 'Legal')}
-            </span>
-
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8">
-              {t('hero.title', 'Terms of')}
-              <br />
-              <span className="text-muted-foreground">
-                {t('hero.title_accent', 'Service')}
-              </span>
-            </h1>
-
-            <p className="text-xl text-muted-foreground max-w-2xl">
-              {t(
-                'hero.subtitle',
-                'These terms govern your use of our website and services. By accessing or using our services, you agree to comply with these terms.',
-              )}
-            </p>
-
-            <p className="text-sm text-muted-foreground mt-4">
-              Last updated: {new Date().toLocaleDateString()}
-            </p>
-          </AnimatedSection>
-        </div>
-      </section>
+      <PageHero
+                eyebrow={t('hero.eyebrow', 'Legal')}
+                title={t('hero.title', 'Terms of')}
+                titleAccent={t('hero.title_accent', 'Service')}
+                subtitle={t(
+                    'hero.subtitle',
+                    'These terms govern your use of our website and services. By accessing or using our services, you agree to comply with these terms.',
+                )}
+                image={meta?.hero_image}
+                imageAlt={meta?.hero_image_alt}
+                seed="service"
+            />
 
       {/* Content */}
       <section className="py-20 border-t border-border">
